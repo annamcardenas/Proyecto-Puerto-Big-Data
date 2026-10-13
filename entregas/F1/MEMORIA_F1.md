@@ -5,11 +5,11 @@
 
 ## 0. Datos de la pareja
 
-| | Miembro 1 | Miembro 2 |
-|---|---|---|
-| Nombre | | |
-| Usuario de GitHub | | |
-| Partes de las que es responsable principal | | |
+| | Miembro 1 | Miembro 2 | Miembro 3 |
+|---|---|---|---|
+| Nombre | Jose | Ana | Hugo |
+| Usuario de GitHub | joseGS10 | |
+| Partes de las que es responsable principal | | | |
 
 **Horas dedicadas aproximadas:** ___  ·  **Commit final:** `______`
 
