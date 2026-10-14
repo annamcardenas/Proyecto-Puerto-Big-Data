@@ -8,7 +8,7 @@
 | | Miembro 1 | Miembro 2 | Miembro 3 |
 |---|---|---|---|
 | Nombre | Jose | Ana | Hugo |
-| Usuario de GitHub | joseGS10 | |
+| Usuario de GitHub | joseGS10 | annamcardenas | Hugopdam |
 | Partes de las que es responsable principal | | | |
 
 **Horas dedicadas aproximadas:** ___  ·  **Commit final:** `______`
