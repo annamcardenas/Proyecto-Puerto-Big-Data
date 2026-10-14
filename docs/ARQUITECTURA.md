@@ -42,7 +42,18 @@ flowchart LR
 ## 4. Decisiones de diseño (registro)
 | Fecha | Decisión | Alternativas | Motivo |
 |---|---|---|---|
-
+| 2026-10-14 | Separar raw y bronze | Guardar todo directamente en Parquet | Preservar el dato original tal cual llega para poder reprocesar si hay errores; bronze ya tiene tipos correctos y es eficiente para consultas |
 ## 5. Componentes y recursos
 | Servicio | Función | Réplicas | Memoria |
 |---|---|---|---|
+| namenode | Indice del sistema de ficheros HDFS | 1 | 1536 MB |
+| datanode |  Almacena los bloques de datos de HDFS | 3 | 728 MB c/u |
+| spark-master | Es el coordinador del claster Spark | 1 | 1 GB |
+| spark-worker | Ejecuta las tareas del Spark | 2 | 2 GB |
+| jupyter | Notebook interactivo con PySpark | 1 | 2560 MB |
+| hdfs-exporter | Exporta métricas de HDFS a Prometheus (perfil monitor) | 1 | 128 MB |
+| node-exporter | Exporta métricas del sistema a Prometheus (perfil monitor) | 1 | 128 MB |
+| prometheus | Recolector de métricas (perfil monitor) | 1 | 512 MB |
+| grafana | Dashboards de monitorización (perfil monitor) | 1 | 384 MB |
+| postgres | Data warehouse puerto_dw (perfil bi) | 1 | 512 MB |
+| superset | Visualización de datos (perfil bi) | 1 | 1536 MB |
