@@ -1,0 +1,35 @@
+# ============================================
+# Archivos generados automáticamente
+# ============================================
+
+# Datos generados por bda.ps1 datos (no son código)
+datos/raw/
+
+# Copias de seguridad de Jupyter
+.ipynb_checkpoints/
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# ============================================
+# Configuración personal de editores
+# ============================================
+
+# Obsidian (configuración personal de la bóveda)
+.obsidian/
+
+# VS Code (configuración personal)
+.vscode/
+
+# ============================================
+# Sistema operativo
+# ============================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
