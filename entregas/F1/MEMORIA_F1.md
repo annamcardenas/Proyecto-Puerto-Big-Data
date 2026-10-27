@@ -14,7 +14,14 @@
 **Horas dedicadas aproximadas:** ___  ·  **Commit final:** `______`
 
 ## 1. Resumen (máx. 10 líneas)
-
+F1.E2 
+**✏️ TAREA A1.** ¿Por qué el espacio «en disco» es aproximadamente el triple del lógico? ¿Qué propiedad de`docker/hadoop.env` lo explica? Contestad en la memoria.
+Para garantizar la tolerancia a fallos y la alta disponibilidad. Propiedad DFS_REPLICATION=3. Hadoop guarda automáticamente 3 copias idénticas de cada bloque en distintos DataNodes para garantizar la tolerancia a fallo. En el fichero de configuración del clúster (docker/hadoop.env) está establecido que cada bloque se guarde 3 veces (réplica = 3).   
+ 
+**✏️ TAREA A2.** La ingesta actual es **por lotes** (todo de golpe). Los datos AIS en realidad llegan de forma
+continua. Describid en la memoria cómo haríais una ingesta **incremental** (idea: `scripts/hdfs/simular_llegada_ais.sh`)
+y qué herramientas se usan en la industria (Kafka, NiFi, Flume, Spark Structured Streaming...).
+Indicad para cada fuente del proyecto: frecuencia de llegada, volumen/día y mecanismo de ingesta propuesto. 
 
 ## 2. Desarrollo por criterio de evaluación
 
