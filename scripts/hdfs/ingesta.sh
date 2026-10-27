@@ -7,7 +7,7 @@
 # Con otro destino (p. ej. /prueba/raw) las zonas y el control se crean bajo /prueba.
 # Es IDEMPOTENTE: se puede repetir sin duplicar datos (put -f sobrescribe).
 # -----------------------------------------------------------------------------
-set -euo pipefail
+set -eu
 ORIGEN="${1:-/datos/raw}"
 DESTINO="${2:-/puerto/raw}"
 
