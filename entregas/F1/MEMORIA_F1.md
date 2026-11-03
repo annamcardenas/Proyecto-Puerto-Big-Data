@@ -46,7 +46,24 @@ Indicad para cada fuente del proyecto: frecuencia de llegada, volumen/día y mec
 
 *Qué se espera:* Tabla de fuentes (frecuencia, volumen/día, mecanismo). Evidencia de la ingesta por lotes (salida de `ingesta.sh`, `/puerto/control/ingestas.jsonl`). Propuesta de ingesta incremental. Lectura con esquema y tratamiento de registros corruptos (TAREA B1).
 
+El script automatiza la carga de datos desde el sistema local hacia HDFS en tres pasos:
+1. Crea la estructura de directorios en el lago de datos (/puerto/raw/, /puerto/silver/, /puerto/gold/ y /puerto/control/) utilizando hdfs dfs -mkdir -p.
+2. Transfiere los ficheros crudos mediante el comando hdfs dfs -put -f. El parámetro -f (force) sobrescribe los ficheros existentes en caso de reejecución, garantizando que la operación sea idempotente (ejecutar el proceso múltiples veces produce exactamente el mismo estado en el lago sin duplicar datos).
+3. Registra cada operación de subida añadiendo una línea de auditoría en formato JSONL dentro del fichero /puerto/control/ingestas.jsonl con la marca temporal, ruta de destino, tamaño y estado de la carga.
+   
+**Tabla de Fuentes**
+1. ais (/puerto/raw/ais): Formato JSONL semi-estructurado. Frecuencia continua en tiempo real. Volumen diario de ~2,08 MB/día (124,9 MB en 60 días). Mecanismo propuesto: Streaming con particionado diario idempotente.
+2. sensores (/puerto/raw/sensores): Formato CSV estructurado. Frecuencia de casi tiempo real (1 min para meteo/oleaje/aire y 5 min para grúas). Volumen diario de ~1,13 MB/día (67,6 MB en 60 días). Mecanismo propuesto: Micro-batch / Streaming hacia ficheros diarios.
+3. contenedores (/puerto/raw/contenedores): Formato CSV estructurado. Frecuencia operacional diaria. Volumen diario de ~114,2 KB/día (40,7 MB en 365 días). Mecanismo propuesto: Ingesta Batch diaria al cierre de jornada desde el sistema de terminal (TOS). 
+4. negocio (/puerto/raw/negocio): Formato mixto (CSV y JSONL). Frecuencia diaria (facturación, incidencias, redes sociales) y mensual (competencia, tipos de cambio). Volumen diario de ~16,5 KB/día (5,9 MB en 365 días). Mecanismo propuesto: Batch diario/mensual desde el ERP y APIs. 
+5. escalas (/puerto/raw/escalas): Formato CSV estructurado. Frecuencia intradiaria/diaria. Volumen diario de ~1,54 KB/día (1,1 MB en 731 días, años 2024 y 2025). Mecanismo propuesto: Batch diario programado. 
+6. maestros (/puerto/raw/maestros): Formato CSV de catálogos estáticos (muelles, navieras, buques). Baja frecuencia (bajo demanda). Volumen total de 33,6 KB (< 0,1 KB/día). Mecanismo propuesto: Batch con recarga completa (full snapshot) mediante -put -f.
 
+**Propuesta de Ingesta Incremental para AIS:**
+Dado que las antenas AIS reciben posiciones GPS de los buques cada pocos segundos, la carga por lotes diarios genera latencia. Se propone una arquitectura de ingesta en tiempo real basada en tres componentes:
+1. Apache NiFi: Conectado al flujo de las estaciones receptoras AIS para capturar las tramas NMEA/JSON, validar su estructura inicial y gestionar colas con control de contrapresión (backpressure).
+2. Apache Kafka: Actúa como bus de mensajería distribuido y desacoplado a través de un topic específico (puerto-ais-raw), absorbiendo picos de tráfico marítimo sin pérdida de eventos.
+3. Spark Structured Streaming: Consume continuamente del topic de Kafka, aplica el esquema explícito separando posibles tramas corruptas y escribe de forma incremental en HDFS particionando por fecha (ais_AAAA-MM-DD.jsonl) mediante checkpointing para asegurar procesamiento exactly-once e idempotencia.  
 
 ### CE1.c · Formato de almacenamiento
 

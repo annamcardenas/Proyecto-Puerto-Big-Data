@@ -38,6 +38,12 @@ flowchart LR
 ## 3. Fuentes e ingesta
 | Fuente | Tipo | Frecuencia real | Volumen/día | Mecanismo propuesto | Idempotente |
 |---|---|---|---|---|---|
+| **ais** (`/puerto/raw/ais`) | JSONL (semi-estructurado) | Tiempo real / Continua (posiciones cada pocos segundos) | ~2,08 MB/día (124,9 MB / 60 días) | Streaming (Kafka + Spark Structured Streaming) o micro-lotes a ficheros diarios `ais_AAAA-MM-DD.jsonl` | Sí (particionado diario / sobrescritura con `-put -f`) |
+| **sensores** (`/puerto/raw/sensores`) | CSV (estructurado, formato largo) | Casi tiempo real (1 min meteo/oleaje/aire; 5 min grúas) | ~1,13 MB/día (67,6 MB / 60 días) | Streaming / Micro-batch (MQTT/Kafka hacia partición diaria `sensores_AAAA-MM-DD.csv`) | Sí (particionado por fecha y sobrescritura `-put -f`) |
+| **contenedores** (`/puerto/raw/contenedores`) | CSV (estructurado) | Eventos operacionales / Diaria (movimientos de terminal y puertas) | ~114,2 KB/día (0,11 MB/día: 40,7 MB / 365 días) | Batch diario (volcado al cierre de jornada desde el TOS de la terminal) | Sí (`hdfs dfs -put -f` por lote/periodo) |
+| **negocio** (`/puerto/raw/negocio`) | CSV y JSONL (mixto: ERP, encuestas, RRSS, incidencias) | Diaria (facturación/incidencias/RRSS) y mensual (competencia/tipos de cambio) | ~16,5 KB/día (5,9 MB / 365 días) | Batch diario/mensual (exportación desde ERP y APIs a HDFS) | Sí (`hdfs dfs -put -f` + registro en `ingestas.jsonl`) |
+| **escalas** (`/puerto/raw/escalas`) | CSV (estructurado) | Intradiaria / Diaria (actualización de ETA, ATA y ATD de buques) | ~1,54 KB/día (1,1 MB / 731 días [2024-2025]) | Batch diario programado (extracción desde el sistema de gestión portuaria) | Sí (`hdfs dfs -put -f` por fichero anual/diario) |
+| **maestros** (`/puerto/raw/maestros`) | CSV (estructurado: catálogos) | Baja frecuencia / Bajo demanda (altas o cambios en muelles, navieras o buques) | 33,6 KB totales (catálogo estático, < 0,1 KB/día) | Batch con recarga completa (*full snapshot*) cuando hay modificaciones | Sí (sobrescritura total del catálogo con `-put -f`) |
 
 ## 4. Decisiones de diseño (registro)
 | Fecha | Decisión | Alternativas | Motivo |
