@@ -1,0 +1,7 @@
+formato,MB,escritura_s,consulta_completa_s,consulta_2col_s
+csv,63.6,2.556,1.617,1.052
+json,124.8,1.497,1.274,0.708
+avro,21.6,1.632,1.107,0.536
+orc,16.9,2.267,1.347,0.444
+parquet_snappy,11.3,1.877,0.606,0.494
+parquet_zstd,7.6,0.886,0.352,0.275
