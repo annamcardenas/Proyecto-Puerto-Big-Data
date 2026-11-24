@@ -8,10 +8,19 @@ datos/raw/
 # Copias de seguridad de Jupyter
 .ipynb_checkpoints/
 
+# Carpeta temporal que crea Spark al usar tablas (spark-warehouse)
+spark-warehouse/
+
 # Caché de Python
-__pycache__/
+_pycache_/
 *.pyc
 *.pyo
+
+# Entorno virtual de Python
+.venv/
+
+# Ficheros de trabajo personales
+salidas_F1.txt
 
 # ============================================
 # Configuración personal de editores
